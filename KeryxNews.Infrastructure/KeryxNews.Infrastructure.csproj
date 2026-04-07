@@ -10,4 +10,14 @@
       <ProjectReference Include="..\KeryxNews.Application\KeryxNews.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.20" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.20" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.20">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
+    </ItemGroup>
+
 </Project>
