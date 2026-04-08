@@ -1,6 +1,6 @@
 @KeryxNews_HostAddress = http://localhost:5052
 
-GET {{KeryxNews_HostAddress}}/weatherforecast/
+GET {{KeryxNews_HostAddress}}/initial/
 Accept: application/json
 
 ###

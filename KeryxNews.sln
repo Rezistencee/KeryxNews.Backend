@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeryxNews", "KeryxNews\KeryxNews.csproj", "{D540CD99-3E7A-4BAF-8F41-A6FB1CCF7DD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeryxNews.Domain", "KeryxNews.Domain\KeryxNews.Domain.csproj", "{A11CB0D8-D46F-4831-906A-AB60A0FE225D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeryxNews.Application", "KeryxNews.Application\KeryxNews.Application.csproj", "{692C9DDE-B7E9-4CAF-BEB6-D726E5C5F2CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeryxNews.Infrastructure", "KeryxNews.Infrastructure\KeryxNews.Infrastructure.csproj", "{F948541C-FF52-47A0-B13A-DE8880B05957}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{D540CD99-3E7A-4BAF-8F41-A6FB1CCF7DD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D540CD99-3E7A-4BAF-8F41-A6FB1CCF7DD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D540CD99-3E7A-4BAF-8F41-A6FB1CCF7DD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A11CB0D8-D46F-4831-906A-AB60A0FE225D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A11CB0D8-D46F-4831-906A-AB60A0FE225D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A11CB0D8-D46F-4831-906A-AB60A0FE225D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A11CB0D8-D46F-4831-906A-AB60A0FE225D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{692C9DDE-B7E9-4CAF-BEB6-D726E5C5F2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692C9DDE-B7E9-4CAF-BEB6-D726E5C5F2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692C9DDE-B7E9-4CAF-BEB6-D726E5C5F2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692C9DDE-B7E9-4CAF-BEB6-D726E5C5F2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F948541C-FF52-47A0-B13A-DE8880B05957}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F948541C-FF52-47A0-B13A-DE8880B05957}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F948541C-FF52-47A0-B13A-DE8880B05957}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F948541C-FF52-47A0-B13A-DE8880B05957}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
