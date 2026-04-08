@@ -1,3 +1,4 @@
+using KeryxNews.Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,17 +9,19 @@ public static class PersistenceInjection
 {
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        var efSettings = configuration.GetSection("EfCore");
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-
+        
+        var efSettings = configuration.GetSection("EfCore")
+            .Get<EfCoreSettings>();
+        
         services.AddDbContext<ApiDbContext>(options =>
         {
             options
-                .EnableSensitiveDataLogging(efSettings.GetValue<bool>("EnableSensitiveDataLogging"))
-                .EnableDetailedErrors(efSettings.GetValue<bool>("EnableDetailedErrors"))
+                .EnableSensitiveDataLogging(efSettings.EnableSensitiveDataLogging)
+                .EnableDetailedErrors(efSettings.EnableDetailedErrors)
                 .UseSqlite(connectionString, sqlite =>
                 {
-                    sqlite.CommandTimeout(efSettings.GetValue<int>("CommandTimeout"));
+                    sqlite.CommandTimeout(efSettings.CommandTimeout);
                 });
         });
 
