@@ -1,5 +1,4 @@
 using KeryxNews.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +6,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<ApiDbContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddPersistence(builder.Configuration);
 
 var app = builder.Build();
 
