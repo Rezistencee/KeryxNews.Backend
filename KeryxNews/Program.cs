@@ -1,3 +1,4 @@
+using KeryxNews.Application.Interfaces;
 using KeryxNews.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddIdentityInfrastructure(builder.Configuration);
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
