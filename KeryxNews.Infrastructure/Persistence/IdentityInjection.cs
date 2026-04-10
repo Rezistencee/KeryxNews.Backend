@@ -1,6 +1,7 @@
 using KeryxNews.Infrastructure.Persistence.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,10 @@ public static class IdentityInjection
             })
             .AddEntityFrameworkStores<ApiDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddDataProtection()
+            .PersistKeysToDbContext<ApiDbContext>()
+            .SetDefaultKeyLifetime(TimeSpan.FromDays(7));
             
         services.ConfigureApplicationCookie(options =>
         {

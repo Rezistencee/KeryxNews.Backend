@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeryxNews.Infrastructure.Persistence;
 
-public class ApiDbContext : IdentityDbContext<AppIdentityUser, IdentityRole<Guid>, Guid>
+public class ApiDbContext : IdentityDbContext<AppIdentityUser, IdentityRole<Guid>, Guid>, IDataProtectionKeyContext
 {
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; }
+    
     public ApiDbContext(DbContextOptions<ApiDbContext> options)
         : base(options)
     {
