@@ -22,7 +22,7 @@ public static class IdentityInjection
             })
             .AddEntityFrameworkStores<ApiDbContext>()
             .AddDefaultTokenProviders();
-
+            
         services.ConfigureApplicationCookie(options =>
         {
             options.Cookie.Name = "AuthCookie";

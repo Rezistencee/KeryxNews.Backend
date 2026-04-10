@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using KeryxNews.Application.Interfaces;
+using KeryxNews.Domain.Entities;
+using KeryxNews.Dtos;
 using KeryxNews.Infrastructure.Persistence.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,16 +22,27 @@ public class AuthController : ControllerBase
         _signInManager = signInManager;
     }
 
-    [HttpGet("google-login")]
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginUserDto model)
+    {
+        var userId = await _authService.LoginAsync(model.Email, model.Password);
+
+        if (userId == null)
+            return Unauthorized("Invalid email or password");
+
+        return Ok(userId);
+    }
+    
+    [HttpGet("external/google")]
     public IActionResult GoogleLogin()
     {
-        var redirectUrl = Url.Action("GoogleResponse", "Auth", null, Request.Scheme);
+        string? redirectUrl = Url.Action("GoogleResponse", "Auth", null, Request.Scheme);
         var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
 
         return Challenge(properties, "Google");
     }
 
-    [HttpGet("google-response")]
+    [HttpGet("external/google/callback")]
     public async Task<IActionResult> GoogleResponse()
     {
         var user = await _authService.AuthenticateWithGoogleAsync();
@@ -39,19 +52,34 @@ public class AuthController : ControllerBase
 
         return Ok();
     }
+        
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
+    {
+        try
+        {
+            User newUser = new User(model.Email, model.FullName, string.Empty);
+            
+            var userId = await _authService.RegisterUserAsync(newUser, model.Password);
+
+            return CreatedAtAction(nameof(Register), new { id = userId });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
     
     [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetProfile()
     {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
-        if (userIdClaim == null) 
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             return Unauthorized();
 
-        var user = await _authService.GetUserByIdAsync(Guid.Parse(userIdClaim));
-        
-        if (user == null) 
+        var user = await _authService.GetUserByIdAsync(userId);
+
+        if (user == null)
             return Unauthorized();
 
         return Ok(new

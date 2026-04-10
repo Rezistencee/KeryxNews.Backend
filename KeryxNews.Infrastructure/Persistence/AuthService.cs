@@ -28,18 +28,33 @@ public class AuthService : IAuthService
         return new User(appUser.Id, appUser.Email, appUser.FullName, appUser.AvatarUrl);
     }
 
-    public async Task<User> GetUserByEmailAsync(string email)
+    public async Task<Guid?> GetUserByEmailAsync(string email)
     {
         var appUser = await _userManager.FindByEmailAsync(email);
         
         if (appUser == null) 
             return null;
 
-        return new User(appUser.Id, appUser.Email, appUser.FullName, appUser.AvatarUrl);
+        return appUser.Id;
+    }
+    
+    public async Task<Guid?> LoginAsync(string email, string password)
+    {
+        var appUser = await _userManager.FindByEmailAsync(email);
+
+        if (appUser == null)
+            return null;
+
+        var result = await _signInManager.PasswordSignInAsync(appUser, password, true, false);
+
+        if (!result.Succeeded)
+            return null;
+
+        return appUser.Id;
     }
     
     
-    public async Task<User> AuthenticateWithGoogleAsync()
+    public async Task<Guid?> AuthenticateWithGoogleAsync()
     {
         var info = await _signInManager.GetExternalLoginInfoAsync();
         
@@ -52,7 +67,8 @@ public class AuthService : IAuthService
         {
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var appUser = await _userManager.FindByEmailAsync(email);
-            return new User(appUser.Id, appUser.Email, appUser.FullName, appUser.AvatarUrl);
+
+            return appUser.Id;
         }
 
         var newUser = new AppIdentityUser
@@ -67,6 +83,31 @@ public class AuthService : IAuthService
         await _userManager.AddLoginAsync(newUser, info);
         await _signInManager.SignInAsync(newUser, true);
 
-        return new User(newUser.Id, newUser.Email, newUser.FullName, newUser.AvatarUrl);
+        return newUser.Id;
+    }
+
+    public async Task<Guid> RegisterUserAsync(User user, string password)
+    {
+        var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+        if (existingUser != null)
+            throw new InvalidOperationException("User already exists");
+        
+        var newUser = new AppIdentityUser
+        {
+            Email = user.Email,
+            UserName = user.Email,
+            FullName = user.FullName,
+            AvatarUrl = user.AvatarUrl
+        };
+
+        var result = await _userManager.CreateAsync(newUser, password);
+
+        if (!result.Succeeded)
+            throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+        await _signInManager.SignInAsync(newUser, false);
+        
+        return newUser.Id;
     }
 }

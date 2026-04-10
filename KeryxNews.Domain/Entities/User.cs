@@ -13,5 +13,12 @@ public class User
         Email = email;
         FullName = fullName;
         AvatarUrl = avatarUrl;
+    } 
+    
+    public User(string email, string fullName, string avatarUrl)
+    {
+        Email = email;
+        FullName = fullName;
+        AvatarUrl = avatarUrl;
     }
 }
