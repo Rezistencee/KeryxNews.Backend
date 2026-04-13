@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
         if (user == null)
             return BadRequest("Google login failed");
 
-        return Ok();
+        return Redirect("http://localhost:5173");
     }
         
     [HttpPost("register")]
