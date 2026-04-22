@@ -31,6 +31,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    await RoleInjection.InitializeAsync(scope.ServiceProvider);
+}
+
 app.UseHttpsRedirection();
 
 app.UseCors("frontend");
