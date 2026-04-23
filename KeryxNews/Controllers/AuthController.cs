@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using KeryxNews.Application.Constants;
 using KeryxNews.Application.Interfaces;
 using KeryxNews.Domain.Entities;
 using KeryxNews.Dtos;
@@ -45,12 +46,23 @@ public class AuthController : ControllerBase
     [HttpGet("external/google/callback")]
     public async Task<IActionResult> GoogleResponse()
     {
-        var user = await _authService.AuthenticateWithGoogleAsync();
+        try
+        {
+            var user = await _authService.AuthenticateWithGoogleAsync();
 
-        if (user == null)
-            return BadRequest("Google login failed");
+            if (user == null)
+                return BadRequest("Google login failed");
 
-        return Redirect("http://localhost:5173");
+            return Redirect("http://localhost:5173");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                error = "Google authentication failed",
+                details = ex.Message
+            });
+        }
     }
         
     [HttpPost("register")]
@@ -70,7 +82,7 @@ public class AuthController : ControllerBase
         }
     }
     
-    [Authorize]
+    [Authorize(Roles = Roles.User)]
     [HttpGet("me")]
     public async Task<IActionResult> GetProfile()
     {

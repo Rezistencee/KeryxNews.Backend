@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using KeryxNews.Application.Constants;
 using KeryxNews.Application.Interfaces;
 using KeryxNews.Domain.Entities;
 using KeryxNews.Infrastructure.Persistence.Models;
@@ -79,8 +80,14 @@ public class AuthService : IAuthService
             AvatarUrl = info.Principal.FindFirstValue("image")
         };
 
-        await _userManager.CreateAsync(newUser);
+        var createResult = await _userManager.CreateAsync(newUser);
+
+        if (!createResult.Succeeded)
+            throw new Exception(string.Join(", ", createResult.Errors.Select(e => e.Description)));
+        
         await _userManager.AddLoginAsync(newUser, info);
+
+        await _userManager.AddToRoleAsync(newUser, Roles.User);
         await _signInManager.SignInAsync(newUser, true);
 
         return newUser.Id;
@@ -105,7 +112,8 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
             throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
-
+        
+        await _userManager.AddToRoleAsync(newUser, Roles.User);
         await _signInManager.SignInAsync(newUser, false);
         
         return newUser.Id;
