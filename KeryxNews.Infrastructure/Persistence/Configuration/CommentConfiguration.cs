@@ -17,8 +17,11 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .IsRequired()
             .HasMaxLength(512);
 
+        builder.Property(c => c.ArticleId)
+            .IsRequired();
+
         builder.HasOne<Article>()
-            .WithMany()
+            .WithMany(a => a.Comments)
             .HasForeignKey(c => c.ArticleId)
             .OnDelete(DeleteBehavior.Cascade);
 

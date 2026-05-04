@@ -22,6 +22,10 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
 
         builder.Property(a => a.Views)
             .HasDefaultValue(0);
+        
+        builder.Property(a => a.Status)
+            .HasConversion<string>()
+            .IsRequired();
 
         builder.HasOne<AppIdentityUser>()
             .WithMany()
