@@ -3,6 +3,7 @@ using KeryxNews.Application.Interfaces;
 using KeryxNews.Domain.Entities;
 using KeryxNews.Infrastructure.Persistence;
 using KeryxNews.Infrastructure.Persistence.Interceptors;
+using KeryxNews.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,12 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<ArticleService>();
 
 builder.Services.AddCors(options =>
 {
