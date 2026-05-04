@@ -1,6 +1,6 @@
 namespace KeryxNews.Domain.Entities;
 
-public class User
+public class User : BaseAuditEntity
 {
     public Guid Id { get; private set; }
     public string Email { get; private set; }

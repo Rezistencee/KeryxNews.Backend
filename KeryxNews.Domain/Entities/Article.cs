@@ -1,6 +1,6 @@
 namespace KeryxNews.Domain.Entities;
 
-public class Article
+public class Article : BaseAuditEntity
 {
     public Guid Id { get; set; }
     public Guid AuthorId { get; set; }

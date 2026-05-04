@@ -18,6 +18,6 @@ public class UserActivityLogConfiguration : IEntityTypeConfiguration<UserActivit
         builder.HasOne<AppIdentityUser>()
             .WithMany()
             .HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .IsRequired();
     }
 }

@@ -11,6 +11,7 @@ public class ApiDbContext : IdentityDbContext<AppIdentityUser, IdentityRole<Guid
 {
     public DbSet<Article> Articles { get; private set; }
     public DbSet<Comment> Comments { get; private set; }
+    public DbSet<UserActivityLog> UserActivityLogs { get; set; }
     
     public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; }
      

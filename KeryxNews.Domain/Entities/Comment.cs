@@ -1,6 +1,6 @@
 namespace KeryxNews.Domain.Entities;
 
-public class Comment
+public class Comment : BaseAuditEntity
 {
     public Guid Id { get; private set; }
     public string Content { get; private set; }

@@ -1,11 +1,18 @@
+using KeryxNews.Application;
 using KeryxNews.Application.Interfaces;
+using KeryxNews.Domain.Entities;
 using KeryxNews.Infrastructure.Persistence;
+using KeryxNews.Infrastructure.Persistence.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<AuditInterceptor>();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
