@@ -1,4 +1,5 @@
 using KeryxNews.Infrastructure.Persistence.Configuration;
+using KeryxNews.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,15 +15,18 @@ public static class PersistenceInjection
         var efSettings = configuration.GetSection("EfCore")
             .Get<EfCoreSettings>();
         
-        services.AddDbContext<ApiDbContext>(options =>
+        services.AddDbContext<ApiDbContext>((sp, options) =>
         {
+            var interceptor = sp.GetRequiredService<AuditInterceptor>();
+            
             options
                 .EnableSensitiveDataLogging(efSettings.EnableSensitiveDataLogging)
                 .EnableDetailedErrors(efSettings.EnableDetailedErrors)
                 .UseSqlite(connectionString, sqlite =>
                 {
                     sqlite.CommandTimeout(efSettings.CommandTimeout);
-                });
+                })
+                .AddInterceptors(interceptor);
         });
 
         return services;
