@@ -49,16 +49,18 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var targetUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken);
+        var targetUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
         if (targetUser == null)
-            return;
+            return false;
 
         _context.Users.Remove(targetUser);
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 
     public async Task<User?> FindByEmail(string email, CancellationToken cancellationToken = default)

@@ -34,16 +34,18 @@ public class CommentRepository : ICommentRepository
         throw new NotImplementedException();
     }
 
-    public async Task DeleteAsync(Comment comment, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid commentId, CancellationToken cancellationToken = default)
     {
-        var targetComment = await GetByIdAsync(comment.Id, cancellationToken);
+        var targetComment = await GetByIdAsync(commentId, cancellationToken);
 
         if (targetComment == null)
-            throw new Exception("Comment not found");
+            return false;
 
         _context.Comments.Remove(targetComment);
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 
     public async Task<IEnumerable<Comment>> GetByArticleIdAsync(Guid articleId, CancellationToken ct = default)

@@ -33,25 +33,28 @@ public class ArticleRepository : IRepository<Article>
     public async Task UpdateAsync(Article article, CancellationToken cancellationToken = default)
     {
         var exists = await _context.Articles
-            .FirstAsync(a => a.Id == article.Id, cancellationToken);
+            .FirstOrDefaultAsync(a => a.Id == article.Id, cancellationToken);
+
+        if (exists == null)
+            throw new Exception("Article not found");
 
         exists.Title = article.Title;
         exists.Content = article.Content;
-        
-        _context.Articles.Update(article);
 
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Article article, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid articleId, CancellationToken cancellationToken = default)
     {
-        var targetArticle = await GetByIdAsync(article.Id, cancellationToken);
-        
-        if(targetArticle == null)
-            throw new Exception("Article not found");
+        var targetArticle = await GetByIdAsync(articleId, cancellationToken);
+
+        if (targetArticle == null)
+            return false;
 
         _context.Articles.Remove(targetArticle);
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }
