@@ -13,9 +13,9 @@ public class CommentRepository : ICommentRepository
         _context = dbContext;
     }
     
-    public async Task<Comment> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Comment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.Comments.FirstAsync(a => a.Id == id, cancellationToken);
+        return await _context.Comments.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
     public async Task<IEnumerable<Comment>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -34,16 +34,16 @@ public class CommentRepository : ICommentRepository
         throw new NotImplementedException();
     }
 
-    public async void Delete(Comment comment)
+    public async Task DeleteAsync(Comment comment, CancellationToken cancellationToken = default)
     {
-        var targetComment = await GetByIdAsync(comment.Id);
+        var targetComment = await GetByIdAsync(comment.Id, cancellationToken);
 
-        if (targetComment is null)
+        if (targetComment == null)
             throw new Exception("Comment not found");
 
         _context.Comments.Remove(targetComment);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Comment>> GetByArticleIdAsync(Guid articleId, CancellationToken ct = default)

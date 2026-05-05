@@ -13,9 +13,9 @@ public class ArticleRepository : IRepository<Article>
         _context = dbContext;
     }
     
-    public async Task<Article> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Article?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.Articles.FirstAsync(a => a.Id == id, cancellationToken);
+        return await _context.Articles.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
     public async Task<IEnumerable<Article>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -43,15 +43,15 @@ public class ArticleRepository : IRepository<Article>
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async void Delete(Article article)
+    public async Task DeleteAsync(Article article, CancellationToken cancellationToken = default)
     {
-        var targetArticle = await GetByIdAsync(article.Id);
+        var targetArticle = await GetByIdAsync(article.Id, cancellationToken);
         
-        if(targetArticle is null)
+        if(targetArticle == null)
             throw new Exception("Article not found");
 
         _context.Articles.Remove(targetArticle);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

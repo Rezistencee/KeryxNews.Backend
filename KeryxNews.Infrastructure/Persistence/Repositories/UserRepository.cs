@@ -15,11 +15,11 @@ public class UserRepository : IUserRepository
         _context = dbContext;
     }
     
-    public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        AppIdentityUser identityUser = await _context.Users.FirstAsync(u => u.Id == id, cancellationToken);
-
-        return identityUser.ToDomain();
+        AppIdentityUser? identityUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        
+        return identityUser?.ToDomain();
     }
 
     public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -49,23 +49,23 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async void Delete(User user)
+    public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)
     {
-        var targetUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+        var targetUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken);
 
-        if (targetUser is null)
+        if (targetUser == null)
             return;
 
         _context.Users.Remove(targetUser);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<User> FindByEmail(string email, CancellationToken cancellationToken = default)
+    public async Task<User?> FindByEmail(string email, CancellationToken cancellationToken = default)
     {
         var targetUser = await _context.Users
-            .FirstAsync(u => u.Email == email, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         
-        return targetUser.ToDomain();
+        return targetUser?.ToDomain();
     }
 }
