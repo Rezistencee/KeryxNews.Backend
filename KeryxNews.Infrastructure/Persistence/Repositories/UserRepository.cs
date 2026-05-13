@@ -15,19 +15,27 @@ public class UserRepository : IUserRepository
         _context = dbContext;
     }
     
+    public async Task<IEnumerable<User>> GetAllAsync(
+        int page, 
+        int pageSize, 
+        CancellationToken cancellationToken = default)
+        {
+            var users = await _context.Users
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return users.Select(u => u.ToDomain());
+        }
+    
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         AppIdentityUser? identityUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         
         return identityUser?.ToDomain();
     }
-
-    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        var users = await _context.Users.ToListAsync(cancellationToken);
-
-        return users.Select(u => u.ToDomain());
-    }
+    
 
     public async Task AddAsync(User user, CancellationToken cancellationToken = default)
     {
@@ -49,18 +57,16 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> DeleteAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)
     {
-        var targetUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        var targetUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken);
 
         if (targetUser == null)
-            return false;
+            throw new Exception("User not found");
 
         _context.Users.Remove(targetUser);
-
         await _context.SaveChangesAsync(cancellationToken);
-
-        return true;
     }
 
     public async Task<User?> FindByEmail(string email, CancellationToken cancellationToken = default)

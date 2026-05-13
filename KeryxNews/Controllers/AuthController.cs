@@ -33,6 +33,18 @@ public class AuthController : ControllerBase
 
         return Ok(userId);
     }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _authService.LogoutAsync();
+
+        return Ok(new
+        {
+            message = "Logged out successfully"
+        });
+    }
     
     [HttpGet("external/google")]
     public IActionResult GoogleLogin()
@@ -99,7 +111,8 @@ public class AuthController : ControllerBase
             user.Id,
             user.FullName,
             user.Email,
-            user.AvatarUrl
+            user.AvatarUrl,
+            user.CreatedAt
         });
     }
 }

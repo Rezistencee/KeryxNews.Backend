@@ -7,10 +7,10 @@ public class Article : BaseAuditEntity
     
     public string Title { get; set; }
     public string Content { get; set; }
+    public string ImageUrl { get; set; }
     
     public int Views { get; set; }
     
-    public DateTime CreatedAt { get; set; }
     public ArticleStatus Status { get; private set; }
     
     private readonly List<Comment> _comments = new List<Comment>();
@@ -23,6 +23,7 @@ public class Article : BaseAuditEntity
         AuthorId = authorId;
         Title = title;
         Content = content;
+        ImageUrl = String.Empty;
         CreatedAt = DateTime.UtcNow;
         Views = 0;
         Status = ArticleStatus.Draft; 

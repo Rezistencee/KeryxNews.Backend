@@ -19,6 +19,9 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 
         builder.Property(c => c.ArticleId)
             .IsRequired();
+        
+        builder.Property(a => a.CreatedAt)
+            .IsRequired();
 
         builder.HasOne<Article>()
             .WithMany(a => a.Comments)

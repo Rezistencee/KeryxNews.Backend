@@ -18,9 +18,16 @@ public class CommentRepository : ICommentRepository
         return await _context.Comments.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<Comment>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Comment>> GetAllAsync(
+        int page, 
+        int pageSize, 
+        CancellationToken cancellationToken = default)
     {
-        return await _context.Comments.ToListAsync(cancellationToken);
+        return await _context.Comments
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task AddAsync(Comment comment, CancellationToken cancellationToken = default)
@@ -34,25 +41,18 @@ public class CommentRepository : ICommentRepository
         throw new NotImplementedException();
     }
 
-    public async Task<bool> DeleteAsync(Guid commentId, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Comment targetComment, CancellationToken cancellationToken = default)
     {
-        var targetComment = await GetByIdAsync(commentId, cancellationToken);
-
-        if (targetComment == null)
-            return false;
-
         _context.Comments.Remove(targetComment);
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        return true;
     }
 
     public async Task<IEnumerable<Comment>> GetByArticleIdAsync(Guid articleId, CancellationToken ct = default)
     {
         return await _context.Comments
             .Where(c => c.ArticleId == articleId)
-            .OrderBy(c => c.CreatedAt)
+            .OrderByDescending(c => c.CreatedAt)
             .ToListAsync(ct);
     }
 }

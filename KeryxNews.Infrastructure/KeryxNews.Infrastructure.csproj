@@ -5,9 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <ProjectReference Include="..\KeryxNews.Application\KeryxNews.Application.csproj" />
+        <ProjectReference Include="..\KeryxNews.Application\KeryxNews.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

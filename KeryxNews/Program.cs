@@ -1,13 +1,17 @@
-using KeryxNews.Application;
+using KeryxNews.Application.Services;
 using KeryxNews.Application.Interfaces;
-using KeryxNews.Domain.Entities;
 using KeryxNews.Infrastructure.Persistence;
 using KeryxNews.Infrastructure.Persistence.Interceptors;
 using KeryxNews.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });;
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -20,11 +24,12 @@ builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ArticleService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddCors(options =>
 {

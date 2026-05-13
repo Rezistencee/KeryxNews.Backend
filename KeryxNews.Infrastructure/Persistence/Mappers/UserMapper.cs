@@ -14,7 +14,8 @@ public static class UserMapper
             entity.Id,
             entity.Email,
             entity.FullName,
-            entity.AvatarUrl
+            entity.AvatarUrl,
+            entity.CreatedAt
         );
     }
 
@@ -28,7 +29,8 @@ public static class UserMapper
             Id = domain.Id,
             Email = domain.Email,
             FullName = domain.FullName,
-            AvatarUrl = domain.AvatarUrl
+            AvatarUrl = domain.AvatarUrl,
+            CreatedAt = domain.CreatedAt
         };
     }
 }

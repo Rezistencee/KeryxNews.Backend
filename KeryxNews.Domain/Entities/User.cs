@@ -7,12 +7,13 @@ public class User : BaseAuditEntity
     public string FullName { get; private set; }
     public string AvatarUrl { get; private set; }
     
-    public User(Guid id, string email, string fullName, string avatarUrl)
+    public User(Guid id, string email, string fullName, string avatarUrl, DateTime timeOffset)
     {
         Id = id;
         Email = email;
         FullName = fullName;
         AvatarUrl = avatarUrl;
+        CreatedAt = timeOffset;
     } 
     
     public User(string email, string fullName, string avatarUrl)
@@ -20,5 +21,6 @@ public class User : BaseAuditEntity
         Email = email;
         FullName = fullName;
         AvatarUrl = avatarUrl;
+        CreatedAt = DateTime.UtcNow;
     }
 }

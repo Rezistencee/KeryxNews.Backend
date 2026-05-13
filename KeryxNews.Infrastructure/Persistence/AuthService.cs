@@ -26,7 +26,7 @@ public class AuthService : IAuthService
         if (appUser == null) 
             return null;
 
-        return new User(appUser.Id, appUser.Email, appUser.FullName, appUser.AvatarUrl);
+        return new User(appUser.Id, appUser.Email, appUser.FullName, appUser.AvatarUrl, appUser.CreatedAt);
     }
 
     public async Task<Guid?> GetUserByEmailAsync(string email)
@@ -38,7 +38,7 @@ public class AuthService : IAuthService
 
         return appUser.Id;
     }
-    
+
     public async Task<Guid?> LoginAsync(string email, string password)
     {
         var appUser = await _userManager.FindByEmailAsync(email);
@@ -54,6 +54,10 @@ public class AuthService : IAuthService
         return appUser.Id;
     }
     
+    public async Task LogoutAsync()
+    {
+        await _signInManager.SignOutAsync();
+    }
     
     public async Task<Guid?> AuthenticateWithGoogleAsync()
     {

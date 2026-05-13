@@ -27,6 +27,9 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
             .HasConversion<string>()
             .IsRequired();
 
+        builder.Property(a => a.CreatedAt)
+            .IsRequired();
+
         builder.HasOne<AppIdentityUser>()
             .WithMany()
             .HasForeignKey(a => a.AuthorId)

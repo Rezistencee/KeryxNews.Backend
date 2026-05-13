@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeryxNews.Infrastructure.Persistence.Repositories;
 
-public class ArticleRepository : IRepository<Article>
+public class ArticleRepository : IArticleRepository
 {
     private readonly ApiDbContext _context;
     
@@ -18,9 +18,16 @@ public class ArticleRepository : IRepository<Article>
         return await _context.Articles.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<Article>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Article>> GetAllAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
     {
-        return await _context.Articles.Where(a => a.Status == ArticleStatus.Draft)
+        return await _context.Articles
+            .Where(a => a.Status == ArticleStatus.Draft)
+            .OrderByDescending(a => a.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
@@ -44,17 +51,27 @@ public class ArticleRepository : IRepository<Article>
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> DeleteAsync(Guid articleId, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Article article, CancellationToken cancellationToken = default)
     {
-        var targetArticle = await GetByIdAsync(articleId, cancellationToken);
-
-        if (targetArticle == null)
-            return false;
-
-        _context.Articles.Remove(targetArticle);
-
+        _context.Articles.Remove(article);
         await _context.SaveChangesAsync(cancellationToken);
+    }
 
-        return true;
+    public async Task<IEnumerable<Article>> GetByUserId(Guid userId, CancellationToken ct = default)
+    {
+        return await _context.Articles
+            .Where(a => a.AuthorId == userId)
+            .ToListAsync(ct);
+    }
+    
+    public async Task<IEnumerable<Article>> GetTrendingAsync(int count, CancellationToken ct = default)
+    {
+        var weekAgo = DateTime.UtcNow.AddDays(-7);
+        
+        return await _context.Articles
+            .Where(a => a.CreatedAt >= weekAgo)
+            .OrderByDescending(a => a.Comments.Count)
+            .Take(count)
+            .ToListAsync(ct);
     }
 }

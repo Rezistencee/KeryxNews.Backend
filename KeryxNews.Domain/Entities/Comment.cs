@@ -7,8 +7,6 @@ public class Comment : BaseAuditEntity
 
     public Guid ArticleId { get; private set; }
     public Guid AuthorId { get; private set; }
-
-    public DateTime CreatedAt { get; private set; }
     
     private Comment() { }
 
